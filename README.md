@@ -81,6 +81,3 @@ The shield's address-select solder jumpers change the address if you stack sever
 - [PCA9685: 16-channel, 12-bit PWM Fm+ I²C-bus LED controller (NXP)](https://www.nxp.com/docs/en/data-sheet/PCA9685.pdf)
 - [TB6612FNG: Driver IC for Dual DC motor (Toshiba)](https://cdn-shop.adafruit.com/datasheets/TB6612FNG_datasheet_en_20121101.pdf)
 
-## Checking the footprint
-
-To compare with Adafruit's library on your board, compile a minimal sketch with each in the Arduino IDE and read the "Sketch uses … bytes of program storage space" and "Global variables use … bytes" lines.
