@@ -15,7 +15,7 @@ It does not drive steppers or servos, or set the PWM frequency (the PCA9685 runs
 
 ## How it works
 
-The shield has a PCA9685 (16-channel, 12-bit PWM, I²C address `0x60`) driving two TB6612 dual H-bridges. Each motor uses three PCA9685 channels: one PWM for speed and two inputs (IN1, IN2) for direction.
+The shield has a PCA9685 (16-channel, 12-bit PWM) driving two TB6612 dual H-bridges. Each motor uses three PCA9685 channels: one PWM for speed and two inputs (IN1, IN2) for direction.
 
 | Motor | PWM | IN1 | IN2 |
 |---|---|---|---|
@@ -34,8 +34,8 @@ The whole API is five functions.
 | `setPWM(channel, on, off)` | Raw write to one PCA9685 channel (0–15). `on` and `off` are 12-bit tick counts (0–4095). |
 | `Motor(motor, dir, pwm)` | Run one motor. `motor` is 1–4, `dir` is `true` for clockwise or `false` for counter-clockwise, `pwm` is speed from 0 (stopped) to 4095 (full). |
 | `Move(dir, pwm)` | Drive motors 3 and 4 together in the same direction, such as the two wheels of a robot. |
-| `Stop()` | Set motors 3 and 4 to zero speed. |
-| `Brake()` | Set motors 3 and 4 into the bridge's brake state. |
+| `Stop()` | Set motors 3 and 4 to zero speed (PWM 0, direction inputs unchanged, which the TB6612 treats as a short brake). |
+| `Brake()` | Set motors 3 and 4 inputs IN1 = IN2 = low with PWM high, which the TB6612 treats as output off (the motor freewheels). |
 
 `write8(reg, val)` is the internal one-byte register write.
 
@@ -65,6 +65,21 @@ Speed is 12-bit, so 4095 is full speed, 2048 about half and 0 stopped.
 ## Usage
 
 Copy the functions you need from `PCA9685.ino` into your sketch, or open it in the Arduino IDE, select your board and upload. The `loop()` in the sketch is a demo drive sequence on motors 3 and 4, so replace it with your own.
+
+## I²C address
+
+| | Address (7-bit) |
+|---|---|
+| **Shield default (used in this sketch)** | **`0x60`** (`#define PCA9685_ADDR 0x60`) |
+| PCA9685 chip base address | `0x40` (all address pins low) |
+| PCA9685 all-call address | `0x70` |
+
+The shield's address-select solder jumpers change the address if you stack several shields. Update `PCA9685_ADDR` to match.
+
+## Datasheets
+
+- [PCA9685: 16-channel, 12-bit PWM Fm+ I²C-bus LED controller (NXP)](https://www.nxp.com/docs/en/data-sheet/PCA9685.pdf)
+- [TB6612FNG: Driver IC for Dual DC motor (Toshiba)](https://cdn-shop.adafruit.com/datasheets/TB6612FNG_datasheet_en_20121101.pdf)
 
 ## Checking the footprint
 
